@@ -9,7 +9,7 @@ function Get-HAConvertPFX2PEM ( $PFXfolder = "C:\ProgramData\Certify\certes\asse
     {
         $name = $tmp.Name
         $file = "$PFXfolder\$name"
-        try
+        try 
         {
             $tempPFX = Get-PfxCertificate -FilePath $file
 
