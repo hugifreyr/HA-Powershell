@@ -21,14 +21,15 @@ function New-HADockerEnv($name = "home-assistant", $volume = "C:\Docker\homeassi
 }
 
 
-function Get-HAConvertPFX2PEM ( $PFXfolder = "C:\ProgramData\Certify\certes\assets\pfx\", $HAfolder = "C:\Docker\homeassistant\ssl\", $OpenSSLfolder = "C:\Program Files\Git\mingw64\bin\" , $Domain = "CN=hugifreyr.com" )
+function Get-HAConvertPFX2PEM ( $PFXfolder = "C:\ProgramData\Certify\certes\assets\pfx\", $HAfolder = "C:\Docker\homeassistant\ssl\", $OpenSSLfolder = "C:\Program Files\Git\mingw64\bin\" , $Domain  )
 {
     $temp = Get-ChildItem -Path $PFXfolder -Recurse -include *.pfx | Select-Object -first 100 | Sort-Object LastWriteTime -Descending
 
     foreach ( $tmp in $temp )
     {
         $name = $tmp.Name
-        $file = "$PFXfolder\$name"
+        $file = "$PFXfolder\$name"""
+        $Domain = "CN=" + $Domain
         try 
         {
             $tempPFX = Get-PfxCertificate -FilePath $file
