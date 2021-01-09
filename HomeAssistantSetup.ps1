@@ -27,13 +27,17 @@ function New-HADockerEnv($name = "home-assistant", $volume = "C:\Docker\homeassi
 
 }
 
-function Get-UpgradeHADockerEnv {
+function Get-UpgradeHADockerEnv( $path = "C:\Docker\homeassistant", $SSLenabled = $true) {
     docker stop "home-assistant"
     docker rm "home-assistant"
     docker rmi "homeassistant/home-assistant:stable"
     docker pull homeassistant/home-assistant:stable
 
-    New-HADockerEnv -SSLenabled $true
+    $path = "C:\Docker\homeassistant"
+    $destinationPath = "$path-backup-" + (Get-Date).tostring(“dd.MM.yyyy”)
+    Copy-Item -Force -Recurse -Verbose -Path $path\ -Destination $destinationPath -PassThru 
+
+    New-HADockerEnv -SSLenabled $SSLenabled 
 }
 
 #Old PFXfolder path was C:\ProgramData\Certify\certes\assets\pfx\
