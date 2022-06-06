@@ -12,7 +12,9 @@ function New-HADockerEnv($name = "home-assistant", $volume = "C:\Docker\homeassi
     Write-Output $volume
 
     #Create docker container
-    docker run --init -d --restart unless-stopped --name="$name" -e "TZ=Iceland" -v $volume -p $portforward homeassistant/home-assistant:stable
+    # Version 2022.6 does not work with --init command
+    #docker run --init -d --restart unless-stopped --name="$name" -e "TZ=Iceland" -v $volume -p $portforward homeassistant/home-assistant:stable #-v "/var/run/docker.sock:/var/run/docker.sock"
+    docker run -d --restart unless-stopped --name="$name" -e "TZ=Iceland" -v $volume -p $portforward homeassistant/home-assistant:stable
     
     #Need to sleep for 5 sec, because HA is still starting
     Start-Sleep -s 5
