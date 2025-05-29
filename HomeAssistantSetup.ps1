@@ -5,7 +5,7 @@
 #Docker need to be installed and if running on Windows, you need to switch the Docker environment to Linux containers.
 #The folder need to be manual created on local machine 
 #The folder or root of the folder need to be added to Docker->Setting->Resources->File Sharing 
-function New-HADockerEnv($name = "home-assistant", $volume = "C:\Docker\homeassistant", $port = "8123", $SSLenabled = $false) {
+function New-HADockerEnv($name = "home-assistant", $volume = "X:\HomeAssistant", $port = "8123", $SSLenabled = $false) {
     $portforward = $port + ":8123"
     $volume = $volume + ":/config"
     Write-Output $port
@@ -27,15 +27,15 @@ function New-HADockerEnv($name = "home-assistant", $volume = "C:\Docker\homeassi
 
 }
 
-function Get-UpgradeHADockerEnv( $path = "C:\Docker\homeassistant", $SSLenabled = $true) {
+function Get-UpgradeHADockerEnv( $path = "X:\HomeAssistant", $SSLenabled = $true) {
     $starttimer = (Get-Date)
     docker stop "home-assistant"
     docker rm "home-assistant"
     docker rmi "homeassistant/home-assistant:stable"
     docker pull homeassistant/home-assistant:stable
 
-    $path = "C:\Docker\homeassistant"
-    $destinationPath = "$path-backup-" + (Get-Date).tostring("dd.MM.yyyy")
+    $path = "X:\HomeAssistant"
+    $destinationPath = "$path-backup\" + (Get-Date).tostring("dd.MM.yyyy")
     Copy-Item -Force -Recurse -Verbose -Path $path\ -Destination $destinationPath -PassThru 
 
     New-HADockerEnv -SSLenabled $SSLenabled
@@ -49,7 +49,7 @@ function Get-UpgradeHADockerEnv( $path = "C:\Docker\homeassistant", $SSLenabled 
 function Get-HAConvertPFX2PEM {
     Param(
         $PFXfolder = "C:\ProgramData\Certify\assets\",
-        $HAfolder = "C:\Docker\homeassistant\",
+        $HAfolder = "X:\HomeAssistant\",
         $OpenSSLfolder = "C:\Program Files\Git\mingw64\bin\",
         [parameter(Mandatory = $true)]
         $Domain,
@@ -78,10 +78,10 @@ function Get-HAConvertPFX2PEM {
                 Write-Output $name
                 Set-Location $OpenSSLfolder
 
-                $temp = "openssl pkcs12 -in `"$file`" -passin pass: -out `"$HAfolder\`"key.pem -nocerts -nodes"
+                $temp = "openssl pkcs12 -legacy -in `"$file`" -passin pass: -out `"$HAfolder\`"key.pem -nocerts -nodes"
                 Write-Output $temp
                 cmd.exe /c $temp
-                $temp = "openssl pkcs12 -in `"$file`" -out `"$HAfolder\`"cert.pem -nokeys -passin pass:"
+                $temp = "openssl pkcs12 -legacy -in `"$file`" -out `"$HAfolder\`"cert.pem -nokeys -passin pass:"
                 Write-Output $temp
                 cmd.exe /c $temp
 
